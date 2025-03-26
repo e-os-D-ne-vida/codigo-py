@@ -13,3 +13,9 @@ Presente_para_Meu_amor/
 chromedriver-win64/
 codigos_arduino/
 formigulas/
+
+# Ignorar o arquivo IA_openai.py
+IA_openai.py
+
+# Ignorar arquivos de texto
+*.txt

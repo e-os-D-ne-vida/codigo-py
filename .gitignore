@@ -1,0 +1,15 @@
+# Ignorar arquivos de conversas
+Conversas_Fael_2025.txt
+Conversas_com_Ela.txt
+Conversas_com_o_meu_amor.py
+
+# Ignorar atalhos e arquivos do Windows
+*.lnk
+desktop.ini
+
+# Ignorar pastas específicas
+IA/
+Presente_para_Meu_amor/
+chromedriver-win64/
+codigos_arduino/
+formigulas/

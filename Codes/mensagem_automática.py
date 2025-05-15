@@ -1,6 +1,7 @@
 import schedule
 import time
 import random
+import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -9,70 +10,69 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 def executar_script():
+    # Diretório base
+    base_dir = os.getcwd()
+
+    # Caminhos relativos convertidos para absolutos
+    caminho_perfil = os.path.join(base_dir, "perfil_selenium")
+    caminho_driver = os.path.join(base_dir, "chromedriver-win64", "chromedriver-win64", "chromedriver.exe")
+
+
     # Configuração do ChromeDriver
     options = webdriver.ChromeOptions()
-    options.add_argument("user-data-dir=C:/Users/rapha/AppData/Local/Google/Chrome/User Data")
-    service = Service("C:/Users/rapha/Desktop/chromedriver-win64/chromedriver.exe")
+    options.add_argument(rf"--user-data-dir={caminho_perfil}")
+    service = Service(caminho_driver)
     driver = webdriver.Chrome(service=service, options=options)
 
     # Abre o WhatsApp Web
     driver.get("https://web.whatsapp.com/")
+    driver.maximize_window()
 
     # Espera até que o WhatsApp Web carregue completamente
-    wait = WebDriverWait(driver, 30)
+    wait = WebDriverWait(driver, 90)
     wait.until(EC.presence_of_element_located((By.XPATH, "//div[@contenteditable='true'][@data-tab='3']")))
 
     def enviar_mensagem(contato, mensagens):
         try:
-            # Busca o contato corretamente
             search_box = wait.until(EC.presence_of_element_located((By.XPATH, "//div[@contenteditable='true'][@data-tab='3']")))
             search_box.clear()
             search_box.send_keys(contato)
-            time.sleep(random.uniform(2, 5))  # Tempo aleatório entre 2 e 5 segundos
+            time.sleep(random.uniform(2, 5))
             search_box.send_keys(Keys.ENTER)
-            time.sleep(random.uniform(3, 6))  # Tempo aleatório entre 3 e 6 segundos
+            time.sleep(random.uniform(3, 6))
 
-            # Busca a caixa de mensagem correta
             chat_box = wait.until(EC.presence_of_element_located((By.XPATH, "//div[@contenteditable='true'][@data-tab='10']")))
 
             for mensagem in mensagens:
                 chat_box.send_keys(mensagem)
-                time.sleep(random.uniform(1, 2))  # Pequena pausa entre mensagens no mesmo contato
+                time.sleep(random.uniform(1, 2))
                 chat_box.send_keys(Keys.ENTER)
-                time.sleep(random.uniform(1, 2))  # Pequena pausa para evitar envio rápido demais
+                time.sleep(random.uniform(1, 2))
 
             print(f"✅ Mensagens enviadas para {contato}")
 
         except Exception as e:
             print(f"❌ Erro ao enviar mensagem para {contato}: {e}")
 
-    # Função agendada para enviar mensagens para cada contato
     def enviar_mensagens_agendadas():
-        contatos = ["xd", "Mano Kuririn", "Rafael Ferreira", "Elias", "Henrique Qi Qi", "micro SD ⚜️", "π8"]
+        # contatos = ["xd", "Mano Kuririn", "Rafael Ferreira", "Elias", "Henrique Qi Qi", "micro SD ⚜️", "π8" , "Sophia" , "Neithan love of my life ❤️" , "Litlle Ruan" , "grazi" , "luiza Qi" , "amor ❤️"]
+        contatos = ["xd"]
         mensagens = [
             "hey hey",
-            "vai querer algum lanche pra amanhã?",
+            "Quer lanchar oq amanhã?",
         ]
-        
+
         for contato in contatos:
             enviar_mensagem(contato, mensagens)
-            tempo_espera = random.uniform(10, 30)  # Tempo aleatório entre 10 e 30 segundos apenas entre contatos
+            tempo_espera = random.uniform(10, 30)
             print(f"⏳ Aguardando {tempo_espera:.2f} segundos antes de enviar para o próximo contato...")
             time.sleep(tempo_espera)
 
-    # Executa a função para enviar as mensagens
     enviar_mensagens_agendadas()
-
-    # Fecha o navegador após o envio das mensagens
     driver.quit()
 
-# Agendar para rodar o script completo em um horário específico, por exemplo, às 21:00
-schedule.every().day.at("21:00").do(executar_script)
+# Agendamento
+schedule.every().day.at("20:00").do(executar_script)
 
-# Também é possível rodar o script de imediato para testes
+# Execução imediata para teste
 executar_script()
-
-# Loop para rodar o agendador
-# while True:
-#     schedule.run_pending()
-#     time.sleep(1)
